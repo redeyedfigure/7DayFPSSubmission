@@ -8,18 +8,29 @@ public class Gun : MonoBehaviour
     public float range = 100f;
     public float fireRate = 15f;
     public float impactForce = 30f;
+    public bool reFire = true;
 
     public Camera fpsCam;
     public GameObject impactEffect;
+    public AudioSource shotSound;
 
     private float nextTimeToFire = 0f;
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButton("Fire1") && Time.time >= nextTimeToFire){
+        if(reFire == true){
+            if(Input.GetButton("Fire1") && Time.time >= nextTimeToFire){
+            shotSound.Play();
             nextTimeToFire = Time.time + 1f/fireRate;
             Shoot();
+            }
+        }
+        if(reFire == false){
+            if(Input.GetButtonDown("Fire1")){
+            shotSound.Play();
+            Shoot();
+            }
         }
     }
 
