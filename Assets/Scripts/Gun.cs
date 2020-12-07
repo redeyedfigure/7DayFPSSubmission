@@ -13,6 +13,7 @@ public class Gun : MonoBehaviour
     public Camera fpsCam;
     public GameObject impactEffect;
     public AudioSource shotSound;
+    public ParticleSystem muzzleFlash;
 
     private float nextTimeToFire = 0f;
 
@@ -21,20 +22,20 @@ public class Gun : MonoBehaviour
     {
         if(reFire == true){
             if(Input.GetButton("Fire1") && Time.time >= nextTimeToFire){
-            shotSound.Play();
             nextTimeToFire = Time.time + 1f/fireRate;
             Shoot();
             }
         }
         if(reFire == false){
             if(Input.GetButtonDown("Fire1")){
-            shotSound.Play();
             Shoot();
             }
         }
     }
 
     void Shoot (){
+        shotSound.Play();
+        muzzleFlash.Play();
         RaycastHit hit;
         if(Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range)){
             Debug.Log(hit.transform.name);
