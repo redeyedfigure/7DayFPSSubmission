@@ -23,6 +23,7 @@ public class Gun : MonoBehaviour
     public Text ammunitions;
     public AudioSource reload;
     public Animator animator;
+    public AudioSource emptyCartridge;
 
     private float nextTimeToFire = 0f;
 
@@ -36,8 +37,12 @@ public class Gun : MonoBehaviour
         if(isReloading)
             return;
         ammunitions.text = " Ammo: " + currentAmmo + "/" + reservedAmmo;
-        if(currentAmmo <= 0){
+        if(currentAmmo <= 0 && reservedAmmo > 0){
             StartCoroutine(Reload());
+            return;
+        }
+        else if(Input.GetButtonDown("Fire1") && reservedAmmo <= 0 && currentAmmo <= 0){
+            emptyCartridge.Play();
             return;
         }
         if(reFire == true){
@@ -60,6 +65,14 @@ public class Gun : MonoBehaviour
         reload.Play();
         yield return new WaitForSeconds(reloadTime);
         animator.SetBool("Reloading", false);
+        if(maxAmmo <= reservedAmmo){
+            currentAmmo = maxAmmo;
+            reservedAmmo = reservedAmmo - maxAmmo;
+        }
+        else if(maxAmmo > reservedAmmo){
+            currentAmmo = reservedAmmo;
+            reservedAmmo = 0;
+        }
         currentAmmo = maxAmmo;
         isReloading = false;
     }
