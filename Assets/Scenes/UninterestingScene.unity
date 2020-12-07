@@ -399,11 +399,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   range: 100
-  fireRate: 1
+  fireRate: 10
   impactForce: 30
   reFire: 0
   maxAmmo: 10
-  reservedAmmo: 0
+  reservedAmmo: 50
   reloadTime: 0.7
   fpsCam: {fileID: 1780968444}
   impactEffect: {fileID: 100006, guid: 0438351a6e6422d43a09930e9be00ee9, type: 3}
@@ -6175,7 +6175,7 @@ MonoBehaviour:
     m_Bits: 512
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
-  antialiasingMode: 0
+  antialiasingMode: 3
   temporalAntialiasing:
     jitterSpread: 0.75
     sharpness: 0.25
