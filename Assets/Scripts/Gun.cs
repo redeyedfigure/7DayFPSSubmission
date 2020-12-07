@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gun : MonoBehaviour
 {
@@ -10,16 +10,36 @@ public class Gun : MonoBehaviour
     public float impactForce = 30f;
     public bool reFire = true;
 
+    public int maxAmmo = 10;
+    private int currentAmmo = -1;
+    public int reservedAmmo = 80;
+    public float reloadTime = 1f;
+    private bool isReloading = false;
+
     public Camera fpsCam;
     public GameObject impactEffect;
     public AudioSource shotSound;
     public ParticleSystem muzzleFlash;
+    public Text ammunitions;
+    public AudioSource reload;
+    public Animator animator;
 
     private float nextTimeToFire = 0f;
 
-    // Update is called once per frame
+    void Start(){
+        if(currentAmmo == -1)
+            currentAmmo = maxAmmo;
+
+    }
     void Update()
     {
+        if(isReloading)
+            return;
+        ammunitions.text = " Ammo: " + currentAmmo + "/" + reservedAmmo;
+        if(currentAmmo <= 0){
+            StartCoroutine(Reload());
+            return;
+        }
         if(reFire == true){
             if(Input.GetButton("Fire1") && Time.time >= nextTimeToFire){
             nextTimeToFire = Time.time + 1f/fireRate;
@@ -33,9 +53,21 @@ public class Gun : MonoBehaviour
         }
     }
 
+    IEnumerator Reload(){
+        isReloading = true;
+        Debug.Log("Reloading...");
+        animator.SetBool("Reloading", true);
+        reload.Play();
+        yield return new WaitForSeconds(reloadTime);
+        animator.SetBool("Reloading", false);
+        currentAmmo = maxAmmo;
+        isReloading = false;
+    }
+
     void Shoot (){
         shotSound.Play();
         muzzleFlash.Play();
+        currentAmmo--;
         RaycastHit hit;
         if(Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range)){
             Debug.Log(hit.transform.name);
