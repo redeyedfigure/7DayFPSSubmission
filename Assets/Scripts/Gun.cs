@@ -60,7 +60,6 @@ public class Gun : MonoBehaviour
 
     IEnumerator Reload(){
         isReloading = true;
-        Debug.Log("Reloading...");
         animator.SetBool("Reloading", true);
         reload.Play();
         yield return new WaitForSeconds(reloadTime);
@@ -83,7 +82,6 @@ public class Gun : MonoBehaviour
         currentAmmo--;
         RaycastHit hit;
         if(Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range)){
-            Debug.Log(hit.transform.name);
 
             Target target = hit.transform.GetComponent<Target>();
             if(target != null){
