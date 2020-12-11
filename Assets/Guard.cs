@@ -7,12 +7,20 @@ public class Guard : MonoBehaviour
     public float speed = 5;
     public float waitTime = .3f;
     public float turnSpeed = 90f;
+    public float timeToSpotPlayer = .5f;
     public float viewAngle;
+    public float playerVisibleTimer;
     public float viewDistance;
+    public int guardShootDamage;
+    public float timeToReshoot;
+    float currentReshootWaitTime;
+    public AudioSource shootSound;
+    public HealthBar healthScript;
     public LayerMask viewMask;
     public Transform pathHolder;
     public Transform player;
     void Start(){
+        currentReshootWaitTime = timeToReshoot;
         Vector3[] waypoints = new Vector3[pathHolder.childCount];
         for(int i = 0; i < waypoints.Length; i++){
             waypoints[i] = pathHolder.GetChild(i).position;
@@ -37,9 +45,28 @@ public class Guard : MonoBehaviour
             yield return null;
         }
     }
+    public void LookAtDaPlayer(){
+        transform.LookAt(player);
+    }
     void Update(){
         if(CanSeePlayer()){
-            Debug.Log("Player is Spotted");
+            playerVisibleTimer += Time.deltaTime;
+        } else{
+            playerVisibleTimer -= Time.deltaTime;
+        }
+        playerVisibleTimer = Mathf.Clamp(playerVisibleTimer, 0, timeToSpotPlayer);
+        if(playerVisibleTimer >= timeToSpotPlayer){
+            Shoot();
+        }
+    }
+    void Shoot(){
+        if(currentReshootWaitTime <= 0){
+            healthScript.SubtractHealth(guardShootDamage);
+            shootSound.Play();
+            currentReshootWaitTime = timeToReshoot;
+        }
+        else{
+            currentReshootWaitTime -= Time.deltaTime;
         }
     }
     bool CanSeePlayer(){
